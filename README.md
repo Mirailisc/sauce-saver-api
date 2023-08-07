@@ -43,6 +43,9 @@ $ pnpm run start:dev
 
 # production mode
 $ pnpm run start:prod
+
+# generate prisma type
+$ pnpm run prisma
 ```
 
 ## Test
