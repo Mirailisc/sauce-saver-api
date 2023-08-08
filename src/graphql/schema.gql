@@ -10,7 +10,7 @@ type Category {
 type Source {
   id: Int!
   source_name: String!
-  source_number: Float
+  source_number: Int
   url: String!
   createdAt: DateTime!
 }
@@ -46,15 +46,15 @@ input UpdateCategoryInput {
 
 input CreateSourceInput {
   source_name: String!
-  source_number: Float
+  source_number: Int
   url: String!
-  categories_id: [Float!]!
+  categories_id: [Int!]!
 }
 
 input UpdateSourceInput {
   source_name: String!
-  source_number: Float
+  source_number: Int
   url: String!
-  categories_id: [Float!]
+  categories_id: [Int!]
   id: Int!
 }

@@ -8,7 +8,7 @@ export class Source {
   @Field()
   source_name: string;
 
-  @Field({ nullable: true })
+  @Field(() => Int, { nullable: true })
   source_number?: number;
 
   @Field()

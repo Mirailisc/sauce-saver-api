@@ -1,16 +1,16 @@
-import { InputType, Field } from '@nestjs/graphql';
+import { InputType, Field, Int } from '@nestjs/graphql';
 
 @InputType()
 export class CreateSourceInput {
   @Field()
   source_name: string;
 
-  @Field({ nullable: true })
+  @Field(() => Int, { nullable: true })
   source_number?: number;
 
   @Field()
   url: string;
 
-  @Field(() => [Number], { nullable: false })
+  @Field(() => [Int], { nullable: false })
   categories_id: number[];
 }
