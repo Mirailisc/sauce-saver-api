@@ -1,0 +1,62 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Source {
+  id: String!
+  source_name: String!
+  source_number: Float
+  url: String!
+  categories: Category!
+  createdAt: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Category {
+  id: String!
+  category_name: String!
+  source: [Source!]
+}
+
+type Query {
+  categories: [Category!]!
+  category(id: String!): Category!
+  source(id: String!): Source!
+}
+
+type Mutation {
+  createCategory(createCategoryInput: CreateCategoryInput!): Category!
+  updateCategory(updateCategoryInput: UpdateCategoryInput!): Category!
+  removeCategory(id: String!): Category!
+  createSource(createSourceInput: CreateSourceInput!): Source!
+  updateSource(updateSourceInput: UpdateSourceInput!): Source!
+  removeSource(id: String!): Source!
+}
+
+input CreateCategoryInput {
+  category_name: String!
+}
+
+input UpdateCategoryInput {
+  category_name: String!
+  id: String!
+}
+
+input CreateSourceInput {
+  source_name: String!
+  source_number: Float
+  url: String!
+  categories_id: [String!]!
+}
+
+input UpdateSourceInput {
+  source_name: String!
+  source_number: Float
+  url: String!
+  categories_id: [String!]
+  id: String!
+}

@@ -16,6 +16,9 @@ model Source {
   source_number Int
   url           String
   categories    Categories[]
+  providers     Providers?   @relation(fields: [providersId], references: [id])
+  providersId   String?      @db.ObjectId
+  createdAt     DateTime     @default(now())
 }
 
 model Categories {
@@ -23,4 +26,10 @@ model Categories {
   category_name String
   Source        Source? @relation(fields: [sourceId], references: [id])
   sourceId      String? @db.ObjectId
+}
+
+model Providers {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  provider_name String
+  Source        Source[]
 }
