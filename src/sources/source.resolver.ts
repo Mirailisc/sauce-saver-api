@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { SourceService } from './source.service';
 import { Source } from './entities/source.entity';
 import { CreateSourceInput } from './dto/create-source.input';
@@ -22,7 +22,7 @@ export class SourceResolver {
   }
 
   @Query(() => Source, { name: 'source' })
-  findOne(@Args('id', { type: () => String }) id: string) {
+  findOne(@Args('id', { type: () => Int }) id: number) {
     return this.sourceService.findOne(id);
   }
 
@@ -34,7 +34,7 @@ export class SourceResolver {
   }
 
   @Mutation(() => Source)
-  removeSource(@Args('id', { type: () => String }) id: string) {
+  removeSource(@Args('id', { type: () => Int }) id: number) {
     return this.sourceService.remove(id);
   }
 }

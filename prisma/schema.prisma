@@ -6,30 +6,39 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model Source {
-  id            String       @id @default(auto()) @map("_id") @db.ObjectId
+  id            Int                @id @default(autoincrement())
   source_name   String
   source_number Int
   url           String
-  categories    Categories[]
-  providers     Providers?   @relation(fields: [providersId], references: [id])
-  providersId   String?      @db.ObjectId
-  createdAt     DateTime     @default(now())
+  createdAt     DateTime           @default(now())
+  Provider      Provider?          @relation(fields: [providerId], references: [id])
+  providerId    Int?
+  categories    CategoryOnSource[]
 }
 
-model Categories {
-  id            String  @id @default(auto()) @map("_id") @db.ObjectId
+model Category {
+  id            Int                @id @default(autoincrement())
   category_name String
-  Source        Source? @relation(fields: [sourceId], references: [id])
-  sourceId      String? @db.ObjectId
+  sources       CategoryOnSource[]
 }
 
-model Providers {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+model CategoryOnSource {
+  sourceId   Int
+  source     Source   @relation(fields: [sourceId], references: [id])
+  categoryId Int
+  category   Category @relation(fields: [categoryId], references: [id])
+  createdAt  DateTime @default(now())
+
+  @@id([sourceId, categoryId])
+}
+
+model Provider {
+  id            Int      @id @default(autoincrement())
   provider_name String
   Source        Source[]
 }

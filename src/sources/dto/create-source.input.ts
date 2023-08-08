@@ -11,6 +11,6 @@ export class CreateSourceInput {
   @Field()
   url: string;
 
-  @Field(() => [String], { nullable: false })
-  categories_id: string[];
+  @Field(() => [Number], { nullable: false })
+  categories_id: number[];
 }

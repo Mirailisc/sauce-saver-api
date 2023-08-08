@@ -1,10 +1,10 @@
 import { CreateSourceInput } from './create-source.input';
-import { InputType, Field, PartialType } from '@nestjs/graphql';
+import { InputType, Field, PartialType, Int } from '@nestjs/graphql';
 
 @InputType()
 export class UpdateSourceInput extends PartialType(CreateSourceInput) {
-  @Field(() => String)
-  id: string;
+  @Field(() => Int)
+  id: number;
 
   @Field()
   source_name: string;
@@ -15,6 +15,6 @@ export class UpdateSourceInput extends PartialType(CreateSourceInput) {
   @Field()
   url: string;
 
-  @Field(() => [String], { nullable: true })
-  categories_id: string[];
+  @Field(() => [Number], { nullable: true })
+  categories_id: number[];
 }

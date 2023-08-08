@@ -3,7 +3,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { CategoriesModule } from './categories/categories.module';
-import { SourceModule } from './source/source.module';
+import { SourceModule } from './sources/source.module';
 
 @Module({
   imports: [

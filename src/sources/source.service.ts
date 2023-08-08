@@ -2,48 +2,63 @@ import { Injectable } from '@nestjs/common';
 import { CreateSourceInput } from './dto/create-source.input';
 import { UpdateSourceInput } from './dto/update-source.input';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Source } from '@prisma/client';
+import { Category, Source } from '@prisma/client';
 
 @Injectable()
 export class SourceService {
   constructor(private prisma: PrismaService) {}
 
   async create(createSourceInput: CreateSourceInput): Promise<Source> {
-    const categories: { id: string }[] = createSourceInput.categories_id.map(
-      (category) => ({
-        id: category,
+    const categories = [];
+    await Promise.all(
+      createSourceInput.categories_id.map(async (id: number) => {
+        const res = await this.prisma.category.findUnique({ where: { id } });
+        categories.push(res);
       }),
     );
 
-    return this.prisma.source.create({
+    console.log(categories);
+
+    const sourceData = await this.prisma.source.create({
       data: {
         source_name: createSourceInput.source_name,
         source_number: createSourceInput.source_number,
         url: createSourceInput.url,
         createdAt: new Date(),
-        categories: {
-          connect: categories,
-        },
-      },
-      include: {
-        categories: true,
       },
     });
+
+    await Promise.all(
+      categories.map(async (category: Category) => {
+        await this.prisma.categoryOnSource.create({
+          data: {
+            categoryId: category.id,
+            sourceId: sourceData.id,
+          },
+          include: {
+            category: true,
+            source: true,
+          },
+        });
+      }),
+    );
+
+    return sourceData;
   }
 
   findAll() {
     return `This action returns all source`;
   }
 
-  findOne(id: string) {
+  findOne(id: number) {
     return `This action returns a #${id} source`;
   }
 
-  update(id: string, updateSourceInput: UpdateSourceInput) {
+  update(id: number, updateSourceInput: UpdateSourceInput) {
     return `This action updates a #${id} source`;
   }
 
-  remove(id: string) {
+  remove(id: number) {
     return `This action removes a #${id} source`;
   }
 }
