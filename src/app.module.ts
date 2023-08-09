@@ -1,9 +1,10 @@
-import { Module } from '@nestjs/common';
-import { GraphQLModule } from '@nestjs/graphql';
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { join } from 'path';
-import { CategoriesModule } from './categories/categories.module';
-import { SourceModule } from './sources/source.module';
+import { Module } from '@nestjs/common'
+import { GraphQLModule } from '@nestjs/graphql'
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
+import { join } from 'path'
+import { CategoriesModule } from './categories/categories.module'
+import { SourceModule } from './sources/source.module'
+import { CategorySourceModule } from './category-source/category-source.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { SourceModule } from './sources/source.module';
     }),
     CategoriesModule,
     SourceModule,
+    CategorySourceModule,
   ],
 })
 export class AppModule {}

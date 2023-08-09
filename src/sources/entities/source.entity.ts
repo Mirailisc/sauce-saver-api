@@ -1,19 +1,19 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { ObjectType, Field, Int } from '@nestjs/graphql'
 
 @ObjectType()
 export class Source {
   @Field(() => Int)
-  id: string;
+  id: string
 
   @Field()
-  source_name: string;
+  source_name: string
 
   @Field(() => Int, { nullable: true })
-  source_number?: number;
+  source_number?: number
 
   @Field()
-  url: string;
+  url: string
 
   @Field(() => Date)
-  createdAt: Date;
+  createdAt: Date
 }
