@@ -11,11 +11,11 @@ export class CategoriesService {
   async create(
     createCategoryInput: CreateCategoryInput,
   ): Promise<PrismaCategory> {
-    const data = await this.prisma.category.findMany({
+    const existsCategoryData = await this.prisma.category.findMany({
       where: { category_name: createCategoryInput.category_name },
     });
 
-    if (data.length > 0) {
+    if (existsCategoryData.length > 0) {
       throw new HttpException('Category is exists', HttpStatus.CONFLICT);
     }
 
@@ -26,16 +26,24 @@ export class CategoriesService {
     return this.prisma.category.findMany({ include: { sources: true } });
   }
 
-  findOne(id: number): Promise<PrismaCategory> {
+  async findOne(id: number): Promise<PrismaCategory> {
     return this.prisma.category.findUnique({
       where: { id },
     });
   }
 
-  update(
+  async update(
     id: number,
     updateCategoryInput: UpdateCategoryInput,
   ): Promise<PrismaCategory> {
+    const existsCategoryData = await this.prisma.category.findMany({
+      where: { category_name: updateCategoryInput.category_name },
+    });
+
+    if (existsCategoryData.length > 0) {
+      throw new HttpException('Category is exists', HttpStatus.CONFLICT);
+    }
+
     return this.prisma.category.update({
       where: { id },
       data: {
@@ -44,7 +52,7 @@ export class CategoriesService {
     });
   }
 
-  remove(id: number): Promise<PrismaCategory> {
+  async remove(id: number): Promise<PrismaCategory> {
     return this.prisma.category.delete({ where: { id } });
   }
 }
