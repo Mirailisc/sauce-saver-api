@@ -2,13 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { CreateSourceInput } from './dto/create-source.input';
 import { UpdateSourceInput } from './dto/update-source.input';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Category, Source } from '@prisma/client';
+import { Category, Source as PrismaSource } from '@prisma/client';
 
 @Injectable()
 export class SourceService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createSourceInput: CreateSourceInput): Promise<Source> {
+  async create(createSourceInput: CreateSourceInput): Promise<PrismaSource> {
     const categories = [];
     await Promise.all(
       createSourceInput.categories_id.map(async (id: number) => {
@@ -46,19 +46,27 @@ export class SourceService {
     return sourceData;
   }
 
-  findAll() {
-    return `This action returns all source`;
+  findAll(): Promise<PrismaSource[]> {
+    return this.prisma.source.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} source`;
+  findOne(id: number): Promise<PrismaSource> {
+    return this.prisma.source.findUnique({ where: { id } });
   }
 
-  update(id: number, updateSourceInput: UpdateSourceInput) {
-    return `This action updates a #${id} source`;
+  update(
+    id: number,
+    updateSourceInput: UpdateSourceInput,
+  ): Promise<PrismaSource> {
+    return this.prisma.source.update({
+      where: { id },
+      data: updateSourceInput,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} source`;
+  remove(id: number): Promise<PrismaSource> {
+    return this.prisma.source.delete({
+      where: { id },
+    });
   }
 }

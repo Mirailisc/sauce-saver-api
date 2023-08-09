@@ -16,25 +16,27 @@ export class SourceResolver {
     return this.sourceService.create(createSourceInput);
   }
 
-  @Query(() => [Source], { name: 'source' })
-  findAll() {
+  @Query(() => [Source], { name: 'sources' })
+  findAll(): Promise<PrismaSource[]> {
     return this.sourceService.findAll();
   }
 
   @Query(() => Source, { name: 'source' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  findOne(@Args('id', { type: () => Int }) id: number): Promise<PrismaSource> {
     return this.sourceService.findOne(id);
   }
 
   @Mutation(() => Source)
   updateSource(
     @Args('updateSourceInput') updateSourceInput: UpdateSourceInput,
-  ) {
+  ): Promise<PrismaSource> {
     return this.sourceService.update(updateSourceInput.id, updateSourceInput);
   }
 
   @Mutation(() => Source)
-  removeSource(@Args('id', { type: () => Int }) id: number) {
+  removeSource(
+    @Args('id', { type: () => Int }) id: number,
+  ): Promise<PrismaSource> {
     return this.sourceService.remove(id);
   }
 }

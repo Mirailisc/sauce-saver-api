@@ -23,6 +23,7 @@ scalar DateTime
 type Query {
   categories: [Category!]!
   category(id: Int!): Category!
+  sources: [Source!]!
   source(id: Int!): Source!
 }
 
