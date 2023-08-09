@@ -1,8 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateCategoryInput } from './dto/create-category.input';
 import { UpdateCategoryInput } from './dto/update-category.input';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Category as PrismaCategory } from '@prisma/client';
+import { throwConflictError } from 'src/utils/error';
 
 @Injectable()
 export class CategoriesService {
@@ -16,7 +17,7 @@ export class CategoriesService {
     });
 
     if (existsCategoryData.length > 0) {
-      throw new HttpException('Category is exists', HttpStatus.CONFLICT);
+      throwConflictError('Category');
     }
 
     return this.prisma.category.create({ data: createCategoryInput });
@@ -41,7 +42,7 @@ export class CategoriesService {
     });
 
     if (existsCategoryData.length > 0) {
-      throw new HttpException('Category is exists', HttpStatus.CONFLICT);
+      throwConflictError('Category');
     }
 
     return this.prisma.category.update({
@@ -53,6 +54,10 @@ export class CategoriesService {
   }
 
   async remove(id: number): Promise<PrismaCategory> {
+    await this.prisma.categoryOnSource.deleteMany({
+      where: { categoryId: id },
+    });
+
     return this.prisma.category.delete({ where: { id } });
   }
 }

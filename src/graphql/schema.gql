@@ -55,7 +55,7 @@ input CreateSourceInput {
 input UpdateSourceInput {
   source_name: String!
   source_number: Int
-  url: String!
+  url: String
   categories_id: [Int!]
   id: Int!
 }

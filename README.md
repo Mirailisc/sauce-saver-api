@@ -29,7 +29,21 @@
 ## Installation
 
 ```bash
+# Install dependencies using pnpm
 $ pnpm install
+```
+
+## Environments
+
+```env
+DATABASE_URL="postgres://<user>:<password>@<url>"
+```
+
+## Database
+
+```bash
+# Run postgres on docker container
+$ docker compose pull db && docker compose up -d db
 ```
 
 ## Running the app
@@ -46,19 +60,6 @@ $ pnpm run start:prod
 
 # generate prisma type
 $ pnpm run prisma
-```
-
-## Test
-
-```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
 ```
 
 ## Support

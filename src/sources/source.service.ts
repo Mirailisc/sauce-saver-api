@@ -1,15 +1,24 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateSourceInput } from './dto/create-source.input';
 import { UpdateSourceInput } from './dto/update-source.input';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Category, Source as PrismaSource } from '@prisma/client';
+import { throwConflictError } from 'src/utils/error';
 
 @Injectable()
 export class SourceService {
   constructor(private prisma: PrismaService) {}
 
   async create(createSourceInput: CreateSourceInput): Promise<PrismaSource> {
+    // Default data for categories
     const categories = [];
+
+    await Promise.all(
+      createSourceInput.categories_id.map(async (id: number) => {
+        const res = await this.prisma.category.findUnique({ where: { id } });
+        categories.push(res);
+      }),
+    );
 
     const existSourceData: PrismaSource[] = await this.prisma.source.findMany({
       where: {
@@ -19,15 +28,8 @@ export class SourceService {
     });
 
     if (existSourceData.length > 0) {
-      throw new HttpException('Source is exists', HttpStatus.CONFLICT);
+      throwConflictError('Source');
     }
-
-    await Promise.all(
-      createSourceInput.categories_id.map(async (id: number) => {
-        const res = await this.prisma.category.findUnique({ where: { id } });
-        categories.push(res);
-      }),
-    );
 
     const newSourceData = await this.prisma.source.create({
       data: {
@@ -68,7 +70,7 @@ export class SourceService {
     id: number,
     updateSourceInput: UpdateSourceInput,
   ): Promise<PrismaSource> {
-    const categories = [];
+    const categories: Category[] = [];
 
     await Promise.all(
       updateSourceInput.categories_id.map(async (id: number) => {
@@ -77,12 +79,29 @@ export class SourceService {
       }),
     );
 
+    const existSourceData: PrismaSource[] = await this.prisma.source.findMany({
+      where: {
+        source_name: updateSourceInput.source_name,
+        source_number: updateSourceInput.source_number,
+      },
+    });
+
+    if (existSourceData.length > 0) {
+      throwConflictError('Source');
+    }
+
+    await this.prisma.categoryOnSource.deleteMany({ where: { sourceId: id } });
+
     await Promise.all(
       categories.map(async (category: Category) => {
-        await this.prisma.categoryOnSource.updateMany({
-          where: { sourceId: id },
+        await this.prisma.categoryOnSource.create({
           data: {
             categoryId: category.id,
+            sourceId: id,
+          },
+          include: {
+            category: true,
+            source: true,
           },
         });
       }),
@@ -90,7 +109,11 @@ export class SourceService {
 
     return this.prisma.source.update({
       where: { id },
-      data: updateSourceInput,
+      data: {
+        source_name: updateSourceInput.source_name,
+        source_number: updateSourceInput.source_number,
+        url: updateSourceInput.url,
+      },
     });
   }
 

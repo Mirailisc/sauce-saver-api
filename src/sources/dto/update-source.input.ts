@@ -12,7 +12,7 @@ export class UpdateSourceInput extends PartialType(CreateSourceInput) {
   @Field(() => Int, { nullable: true })
   source_number?: number;
 
-  @Field()
+  @Field({ nullable: true })
   url: string;
 
   @Field(() => [Int], { nullable: true })
