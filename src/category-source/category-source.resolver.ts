@@ -12,10 +12,10 @@ export class CategorySourceResolver {
     return this.categorySourceService.findAll()
   }
 
-  @Query(() => CategorySource, { name: 'categoriesFromSource' })
+  @Query(() => [CategorySource], { name: 'categoriesFromSource' })
   async findCategoriesFromSource(
     @Args('id', { type: () => Int }) id: number,
-  ): Promise<CategoryOnSource[]> {
+  ): Promise<{ sourceId: number; categoryId: number; createdAt: Date }[]> {
     return await this.categorySourceService.findCategoriesFromSource(id)
   }
 }

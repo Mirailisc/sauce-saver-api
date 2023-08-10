@@ -11,15 +11,15 @@ export class CategorySource {
   @Field(() => Int)
   sourceId: number
 
-  @Field(() => Source)
-  source: PrismaSource
-
   @Field(() => Int)
   categoryId: number
+
+  @Field(() => Date)
+  createdAt: Date
 
   @Field(() => Category)
   category: PrismaCategory
 
-  @Field(() => Date)
-  createAt: Date
+  @Field(() => Source)
+  source: PrismaSource
 }

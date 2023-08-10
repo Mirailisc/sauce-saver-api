@@ -22,10 +22,10 @@ scalar DateTime
 
 type CategorySource {
   sourceId: Int!
-  source: Source!
   categoryId: Int!
+  createdAt: DateTime!
   category: Category!
-  createAt: DateTime!
+  source: Source!
 }
 
 type Query {
@@ -34,7 +34,7 @@ type Query {
   sources: [Source!]!
   source(id: Int!): Source!
   categoryWithSource: [CategorySource!]!
-  categoriesFromSource(id: Int!): CategorySource!
+  categoriesFromSource(id: Int!): [CategorySource!]!
 }
 
 type Mutation {

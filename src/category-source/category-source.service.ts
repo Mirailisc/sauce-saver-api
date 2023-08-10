@@ -20,7 +20,7 @@ export class CategorySourceService {
       where: {
         sourceId: id,
       },
-      select: {
+      include: {
         category: true,
         source: true,
       },

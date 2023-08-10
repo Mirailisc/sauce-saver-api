@@ -5,6 +5,8 @@ import { PrismaService } from 'src/prisma/prisma.service'
 import { Category, Source as PrismaSource } from '@prisma/client'
 import { throwConflictError } from 'src/utils/error'
 
+const UNDEFINED = 'undefined'
+
 @Injectable()
 export class SourceService {
   constructor(private prisma: PrismaService) {}
@@ -72,12 +74,14 @@ export class SourceService {
   ): Promise<PrismaSource> {
     const categories: Category[] = []
 
-    await Promise.all(
-      updateSourceInput.categories_id.map(async (id: number) => {
-        const res = await this.prisma.category.findUnique({ where: { id } })
-        categories.push(res)
-      }),
-    )
+    if (typeof updateSourceInput.categories_id !== UNDEFINED) {
+      await Promise.all(
+        updateSourceInput.categories_id.map(async (id: number) => {
+          const res = await this.prisma.category.findUnique({ where: { id } })
+          categories.push(res)
+        }),
+      )
+    }
 
     const existSourceData: PrismaSource[] = await this.prisma.source.findMany({
       where: {
@@ -90,22 +94,24 @@ export class SourceService {
       throwConflictError('Source')
     }
 
-    await this.prisma.categoryOnSource.deleteMany({ where: { sourceId: id } })
+    if (typeof updateSourceInput.categories_id !== UNDEFINED) {
+      await this.prisma.categoryOnSource.deleteMany({ where: { sourceId: id } })
 
-    await Promise.all(
-      categories.map(async (category: Category) => {
-        await this.prisma.categoryOnSource.create({
-          data: {
-            categoryId: category.id,
-            sourceId: id,
-          },
-          include: {
-            category: true,
-            source: true,
-          },
-        })
-      }),
-    )
+      await Promise.all(
+        categories.map(async (category: Category) => {
+          await this.prisma.categoryOnSource.create({
+            data: {
+              categoryId: category.id,
+              sourceId: id,
+            },
+            include: {
+              category: true,
+              source: true,
+            },
+          })
+        }),
+      )
+    }
 
     return this.prisma.source.update({
       where: { id },
